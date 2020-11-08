@@ -116,7 +116,7 @@ function printElementsInMap(key,value){
     console.log("key: "+key+" value: "+value)
 }
 
-//UC9
+//UC9 arrow function
 const findTotal = (totalVal,dailyVal)=>{
     return totalVal+dailyVal;
 }
@@ -139,8 +139,11 @@ console.log(fullWorkingDays)
 console.log(partWorkingDays)
 console.log(nonWorkingDays)
 
-/*
-//
+
+//UC10
+const calcDailyWage = (emphrs)=>{
+    return emphrs*WAGE_PER_HOUR;
+}
 totalEmpHrs = 0
 totalEmpDays = 0
 let empDailyHrsAndWageArr = new Array();
@@ -150,12 +153,110 @@ while(totalEmpDays<MAX_DAYS&&totalEmpHrs<MAX_HRS){
     let empHrs = getWorkingHours(empCheck)
     totalEmpHrs+=empHrs
     empDailyHrsAndWageArr.push({
-        dayNum:totalWorkingDays,
+        dayNum:totalEmpDays,
         dailyHours:empHrs,
         dailyWage:calcDailyWage(empHrs),
         toString(){
-            return "\nDay"+this.dayNum+'=>Working hours is '+this.dailyHours+
+            return "\nDay"+this.dayNum+'=>Working hours is '+this.dailyHours+' and wage earned ='+this.dailyWage
         }
     })
 }
+console.log("UC10 showing daily hours worked and wage earned: "+empDailyHrsAndWageArr)
+
+//UC11A
+totalWage = empDailyHrsAndWageArr.filter(dailyHrsAndWage=>dailyHrsAndWage.dailyWage>0)
+                .reduce((totalWage,dailyHrsAndWage)=>totalWage+=dailyHrsAndWage.dailyWage,0)//doubt
+
+totalEmpHrs = empDailyHrsAndWageArr.filter(dailyHrsAndWage=>dailyHrsAndWage.dailyHours>0)
+                .reduce((totalHrs,dailyHrsAndWage)=>totalHrs+=dailyHrsAndWage.dailyHours,0)
+
+console.log("\nUC 11A total wage:"+totalWage+" for total hours:"+totalEmpHrs)
+
+//UC11B
+process.stdout.write("\nUC11B logging full work days")
+empDailyHrsAndWageArr.filter(dailyHrsAndWage=>dailyHrsAndWage.dailyHours==8)
+                    .forEach(dailyHrsAndWage=>process.stdout.write(dailyHrsAndWage.toString()))
+
+//UC11C
+process.stdout.write("\n\nUC11C logging part working days")
+empDailyHrsAndWageArr.filter(dailyHrsAndWage=>dailyHrsAndWage.dailyHours==4)
+                    .forEach(dailyHrsAndWage=>process.stdout.write(dailyHrsAndWage.toString()))
+
+//UC11D
+process.stdout.write("\n\nUC11C logging no working days")
+empDailyHrsAndWageArr.filter(dailyHrsAndWage=>dailyHrsAndWage.dailyHours==0)
+                    .forEach(dailyHrsAndWage=>process.stdout.write(dailyHrsAndWage.toString()))
+
+//UC11-ability to create employee payroll data
+/*
+class EmployeePayrollData{
+    id;
+    name;
+    salary;
+
+    constructor(id,name,salary){
+        this.id = id;
+        this.name = name;
+        this.salary = salary;
+    }
+
+    get name(){
+        return this._name;
+    }
+    set name(name){
+        this._name = name;
+    }
+    get id(){
+        return this._id;
+    }
+    set id(id){
+        this._id = id;
+    }
+    toString(){
+        return "id="+this.id+" name="+this.name+" salary="+this.salary;
+    }
+}
+let employeePayrollData = new EmployeePayrollData(1,"Mark",30000);
+console.log("\n\nUC11 payroll object:  "+employeePayrollData.toString());
+employeePayrollData.name = "Prashant"
+console.log("\n edited data:         "+employeePayrollData.toString())
 */
+//UC12
+class EmployeePayrollData{
+    id;
+    salary;
+    gender;
+    startDate;
+
+    constructor(...parameters){
+        this.id = parameters[0]
+        this.name = parameters[1]
+        this.salary = parameters[2]
+        this.gender = parameters[3]
+        this.startDate = parameters[4]
+    }
+
+    get name(){
+        return this._name;
+    }
+    set name(name){
+        let nameRegex = RegExp('^[A-Z]{1}[a-z]{3,}$')
+        if(nameRegex.test(name))
+        this._name = name;
+        else throw "Name is Incorrect!"
+    }
+    toString(){
+        const options = { year: 'numeric',month: 'long',day: 'numeric',weekday:'long'}
+        const empDate = this.startDate == undefined ?"undefined":this.startDate.toLocaleDateString("en-US",options);
+        return "id="+this.id+" name="+this.name+" salary="+this.salary+" gender="+this.gender+" start date:"+empDate
+    }
+}
+let employeePayrollData = new EmployeePayrollData(1,"Mark",30000);
+console.log("\n\nUC12 payroll object:  "+employeePayrollData.toString());
+employeePayrollData.name = "prashant";
+console.log(employeePayrollData.toString())
+let newEmployeePayrollData = new EmployeePayrollData(2,"Terrisa",40000,"F",new Date())
+console.log(newEmployeePayrollData.toString())
+
+//
+
